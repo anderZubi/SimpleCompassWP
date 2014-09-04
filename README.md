@@ -40,7 +40,7 @@ public class CompassControl : Control
 The heading property of the compass control is binded to a property in the ViewModel.
 
 XAML
-```xaml
+```xml
 <my:CompassControl Width="300" Height="300" Heading="{Binding CurrentHeading}"/>
 ```
 
@@ -80,7 +80,7 @@ C#
     }
 ```
 
- Every time compass sensor returns a new value, CurrentHeading property is set and the custom compass control in the user interface reflects it's value.
+Every time compass sensor returns a new value, CurrentHeading property is set and the custom compass control in the user interface reflects it's value.
 
 C#
 ```cs
@@ -95,5 +95,5 @@ myCompass.CurrentValueChanged += new System.EventHandler<SensorReadingEventArgs<
 
 - _CompassControl.cs - Implements custom compass control_
 - _Generic.xaml - Defines the visual template of the compass control_
-- _MainPage.xaml - Implements the View of the application__ _
+- _MainPage.xaml - Implements the View of the application_
 - _MainViewModel.cs - Implements the ViewModel used by MainPage.xaml_
