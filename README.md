@@ -2,6 +2,8 @@
 
 _This code sample shows how to create a compass custom control and use compass sensor to set it's value, following the MVVM pattern._
 
+<p align="center"><img src ="http://code.msdn.microsoft.com/wpapps/site/view/file/67059/1/Capture3.JPG" width="250" /></p>
+
 ## Building the Sample
 
 _To build this sample decompress the .zip file and open solution in Visual Studio 2010. Select Build from project's context menu._
@@ -17,76 +19,77 @@ _This project shows how can we easily make a compass application by implementing
 This sample implements a custom control with a DependencyProperty called heading.
 
 C#
+```cs
+public class CompassControl : Control 
+{ 
+    public static readonly DependencyProperty HeadingProperty = DependencyProperty.Register("Heading", typeof(double), typeof(CompassControl), null); 
 
-    public class CompassControl : Control 
+    public CompassControl() 
     { 
-        public static readonly DependencyProperty HeadingProperty = DependencyProperty.Register("Heading", typeof(double), typeof(CompassControl), null); 
- 
-        public CompassControl() 
-        { 
-            DefaultStyleKey = typeof(CompassControl); 
-        } 
- 
-        public double Heading 
-        { 
-            get { return (double)base.GetValue(HeadingProperty); } 
-            set { base.SetValue(HeadingProperty, value); } 
-        } 
-    }
+        DefaultStyleKey = typeof(CompassControl); 
+    } 
+
+    public double Heading 
+    { 
+        get { return (double)base.GetValue(HeadingProperty); } 
+        set { base.SetValue(HeadingProperty, value); } 
+    } 
+}
+```
 
 The heading property of the compass control is binded to a property in the ViewModel.
 
 XAML
-
-    <my:CompassControl Width="300" Height="300" Heading="{Binding CurrentHeading}"/>
+```xaml
+<my:CompassControl Width="300" Height="300" Heading="{Binding CurrentHeading}"/>
+```
 
 C#
+```cs
+    /// <summary> 
+    /// The <see cref="CurrentHeading" /> property's name. 
+    /// </summary> 
+    public const string CurrentHeadingPropertyName = "CurrentHeading"; 
 
+    private double _currentHeading = 0.0; 
 
-        /// <summary> 
-        /// The <see cref="CurrentHeading" /> property's name. 
-        /// </summary> 
-        public const string CurrentHeadingPropertyName = "CurrentHeading"; 
- 
-        private double _currentHeading = 0.0; 
- 
-        /// <summary> 
-        /// Gets the Heading property. 
-        /// Changes to that property's value raise the PropertyChanged event.  
-        /// </summary> 
-        public double CurrentHeading 
+    /// <summary> 
+    /// Gets the Heading property. 
+    /// Changes to that property's value raise the PropertyChanged event.  
+    /// </summary> 
+    public double CurrentHeading 
+    { 
+        get 
         { 
-            get 
+            return _currentHeading; 
+        } 
+
+        set 
+        { 
+            if (_currentHeading == value) 
             { 
-                return _currentHeading; 
+                return; 
             } 
- 
-            set 
-            { 
-                if (_currentHeading == value) 
-                { 
-                    return; 
-                } 
- 
-                var oldValue = _currentHeading; 
-                _currentHeading = value; 
- 
-                // Update bindings, no broadcast 
-                RaisePropertyChanged(CurrentHeadingPropertyName); 
-            } 
-        }
+
+            var oldValue = _currentHeading; 
+            _currentHeading = value; 
+
+            // Update bindings, no broadcast 
+            RaisePropertyChanged(CurrentHeadingPropertyName); 
+        } 
+    }
+```
 
  Every time compass sensor returns a new value, CurrentHeading property is set and the custom compass control in the user interface reflects it's value.
 
 C#
-
-    myCompass.CurrentValueChanged += new System.EventHandler<SensorReadingEventArgs<CompassReading>>((s, e) => 
-                    { 
-                        // This will update the current heading value. We have to put it in correct direction 
-                        Deployment.Current.Dispatcher.BeginInvoke(() => { this.CurrentHeading = 360 - e.SensorReading.TrueHeading; }); 
-                    });
-
- 
+```cs
+myCompass.CurrentValueChanged += new System.EventHandler<SensorReadingEventArgs<CompassReading>>((s, e) => 
+                { 
+                    // This will update the current heading value. We have to put it in correct direction 
+                    Deployment.Current.Dispatcher.BeginInvoke(() => { this.CurrentHeading = 360 - e.SensorReading.TrueHeading; }); 
+                });
+```
 
 ## Source Code Files
 
